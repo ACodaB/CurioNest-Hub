@@ -52,6 +52,24 @@ function validateField(fieldId, inputEl, validatorFn){
 }
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// ---- Email delivery via Formspree ----
+// Submits a <form> to its Formspree endpoint over AJAX (so we stay on the
+// page and can show our own success/error messaging) and sets the hidden
+// _subject field first so the owner's inbox shows what kind of request it is.
+function submitToFormspree(form, { subjectTag, name, phone }){
+  const subjectField = form.querySelector('input[name="_subject"]');
+  if (subjectField) {
+    const phoneDetails = phone ? ` (${phone})` : '';
+    subjectField.value = `${subjectTag} from ${name}`;
+}
+
+  return fetch(form.action, {
+    method: form.method,
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  });
+}
+
 // Contact form
 const contactForm = document.getElementById('contactForm');
 contactForm.addEventListener('submit', function(e){
@@ -64,12 +82,31 @@ contactForm.addEventListener('submit', function(e){
   const validEmail = validateField('c-email-field', email, v => emailRegex.test(v));
   const validMessage = validateField('c-message-field', message, v => v.length > 0);
 
-  if(validName && validEmail && validMessage){
-    alert('Thanks, ' + name.value.trim() + '! Your message has been sent. We will get back to you soon.');
-    contactForm.reset();
-  } else {
+  if(!(validName && validEmail && validMessage)){
     alert('Please fix the highlighted fields before submitting.');
+    return;
   }
+
+  const submitBtn = contactForm.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+
+  submitToFormspree(contactForm, { subjectTag: 'Website Contact Request', name: name.value.trim() })
+    .then(response => {
+      if(response.ok){
+        alert('Thanks, ' + name.value.trim() + '! Your message has been sent. We will get back to you soon.');
+        contactForm.reset();
+      } else {
+        alert('Something went wrong sending your message. Please try again, or email us directly.');
+      }
+    })
+    .catch(() => {
+      alert('Something went wrong sending your message. Please check your connection and try again.');
+    })
+    .finally(() => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Message';
+    });
 });
 
 // Booking form
@@ -78,16 +115,36 @@ bookingForm.addEventListener('submit', function(e){
   e.preventDefault();
   const name = document.getElementById('b-name');
   const email = document.getElementById('b-email');
+  const phone = document.getElementById('b-phone');
   const message = document.getElementById('b-message');
 
   const validName = validateField('b-name-field', name, v => v.length > 0);
   const validEmail = validateField('b-email-field', email, v => emailRegex.test(v));
   const validMessage = validateField('b-message-field', message, v => v.length > 0);
 
-  if(validName && validEmail && validMessage){
-    alert('Thanks, ' + name.value.trim() + '! Your booking inquiry has been sent. We will be in touch shortly.');
-    bookingForm.reset();
-  } else {
+  if(!(validName && validEmail && validMessage)){
     alert('Please fix the highlighted fields before submitting.');
+    return;
   }
+
+  const submitBtn = bookingForm.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+
+  submitToFormspree(bookingForm, { subjectTag: 'Website Booking Inquiry', name: name.value.trim() , phone: phone ? phone.value.trim() : ''})
+    .then(response => {
+      if(response.ok){
+        alert('Thanks, ' + name.value.trim() + '! Your booking inquiry has been sent. We will be in touch shortly.');
+        bookingForm.reset();
+      } else {
+        alert('Something went wrong sending your inquiry. Please try again, or email us directly.');
+      }
+    })
+    .catch(() => {
+      alert('Something went wrong sending your inquiry. Please check your connection and try again.');
+    })
+    .finally(() => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Booking Inquiry';
+    });
 });
