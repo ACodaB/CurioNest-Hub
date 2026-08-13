@@ -169,7 +169,7 @@ body.dark .section-head .kicker{ color:var(--blue); }
 
 /* ============ ABOUT ============ */
 #about .about-grid{
-   grid-template-columns:0.85fr 1.15fr; gap:60px; align-items:center;
+     grid-template-columns:0.85fr 1.15fr; gap:60px; align-items:center;
 }
 .about-photo{
   border-radius:var(--radius);
@@ -200,16 +200,48 @@ body.dark .about-copy .founder{ color:var(--blue); }
   border:1px solid var(--line); border-radius:30px; padding:8px 18px;
   font-size:.85rem; color:var(--ink); background:var(--beige-card);
 }
+
+/* Card Outer Container */
 .semesters{
-  display:grid; grid-template-columns:1fr 1fr; gap:0;
+  display: block; /* Outer card acts as vertical container */
   background:var(--beige-card);
   border-radius:var(--radius);
   box-shadow:var(--shadow);
   border:1px solid var(--line);
   overflow:hidden;
+  padding: 32px 0 40px;
 }
-.semester{ padding:44px 40px; position:relative; }
-.semester:first-child{ border-right:1px dashed var(--line); }
+
+/* Centered Badge Header */
+.semesters-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.semesters-header .program-title {
+  display: inline-block;
+  font-family: var(--font-head); /* Titan One */
+  font-size: 1.3rem;
+  color: var(--blue-deep);
+  background: var(--beige);
+  border: 2px solid var(--blue);
+  padding: 8px 28px;
+  border-radius: 30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(48, 175, 255, 0.15);
+}
+
+/* 2-Column Grid Wrapper for Semesters */
+.semesters-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.semester{ padding: 20px 40px 30px; position:relative; }
+.semesters-body .semester:first-child{ border-right:1px dashed var(--line); }
+
 .semester .num{
   display:inline-block; font-family:var(--font-head); font-size:1rem;
   color:#fff; background:var(--blue); padding:6px 16px; border-radius:20px; margin-bottom:20px;
@@ -224,6 +256,15 @@ body.dark .about-copy .founder{ color:var(--blue); }
 .semester li::before{
   content:""; position:absolute; left:0; top:20px; width:10px; height:10px;
   border-radius:50%; background:var(--blue);
+}
+
+/* Responsive adjustment for small screens */
+@media (max-width: 768px) {
+  .semesters-body { grid-template-columns: 1fr; }
+  .semesters-body .semester:first-child { 
+    border-right: none; 
+    border-bottom: 1px dashed var(--line); 
+  }
 }
 
 /* ============ CONTACT ============ */
