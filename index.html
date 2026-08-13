@@ -140,6 +140,9 @@
     </div>
 
     <form class="form-card reveal" id="contactForm" action="https://formspree.io/f/xaewjdde" method="POST" novalidate>
+            <!-- Honeypot Field for Spam Protection -->
+      <input type="text" name="_gotcha" style="display:none !important" tabindex="-1" autocomplete="off">
+      
       <input type="hidden" name="_subject" id="c-subject" value="Website Contact Request">
       <div class="field" id="c-name-field">
         <label for="c-name">Name</label>
@@ -173,6 +176,9 @@
     </div>
 
     <form class="form-card reveal" id="bookingForm" action="https://formspree.io/f/xljrnwpn" method="POST" novalidate>
+            <!-- Honeypot Field for Spam Protection -->
+      <input type="text" name="_gotcha" style="display:none !important" tabindex="-1" autocomplete="off">
+
       <input type="hidden" name="_subject" id="b-subject" value="Website Booking Inquiry">
       <div class="field" id="b-name-field">
         <label for="b-name">Name</label>
